@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>野菜アプリ</title>
+
+<style>
+body{
+    font-family:sans-serif;
+    background:#f5fff5;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:0;
+    min-height:100vh;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    width:350px;
+    margin:15px 0;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px #ccc;
+    text-align:center;
+}
+
+button{
+    margin:5px;
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    background:#4CAF50;
+    color:white;
+}
+
+button:disabled{
+    background:gray;
+}
+
+img{
+    width:100%;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+#avatar{
+    font-size:24px;
+    font-weight:bold;
+}
+
+#couponList{
+    text-align:left;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🥦 野菜アプリ</h1>
+
+<div class="card">
+    <h2>アバター</h2>
+    <div id="avatar">😞 疲れ気味</div>
+    <p>ポイント：<span id="point">0</span> pt</p>
+</div>
+
+<div class="card">
+    <h2>📸 食事記録</h2>
+
+    <input type="file" id="photo" accept="image/*">
+
+    <br><br>
+
+    <button id="saveBtn" onclick="saveFood()">
+        保存して記録する
+    </button>
+
+    <div id="preview"></div>
+</div>
+
+<div class="card">
+    <h2>🛒 クーポン交換</h2>
+
+    <button onclick="buyCoupon('season')">
+        🥕 岐阜の旬の野菜（2000pt）
+    </button>
+
+    <button onclick="buyCoupon('gifu')">
+        🌿 岐阜野菜セット（3000pt）
+    </button>
+
+    <p id="shopMsg"></p>
+</div>
+
+<div class="card">
+    <h2>🎫 所持クーポン</h2>
+    <div id="couponList">なし</div>
+</div>
+
+<script>
+
+let point = 0;
+let saved = false;
+let coupons = [];
+
+function saveFood() {
+
+    const photo = document.getElementById("photo");
+
+    if (photo.files.length === 0) {
+        alert("写真を選択してください");
+        return;
+    }
+
+    if (saved) {
+        alert("新しい写真を選択してください");
+        return;
+    }
+
+    const file = photo.files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        document.getElementById("preview").innerHTML =
+        `<img src="${e.target.result}" alt="写真">`;
+
+    };
+
+    reader.readAsDataURL(file);
+
+    point += 10;
+
+    saved = true;
+
+    document.getElementById("saveBtn").disabled = true;
+
+    updateUI();
+}
+
+document.getElementById("photo").addEventListener("change", function() {
+
+    saved = false;
+    document.getElementById("saveBtn").disabled = false;
+
+});
+
+function buyCoupon(type) {
+
+    if(type === "season"){
+
+        if(point < 2000){
+            document.getElementById("shopMsg").textContent =
+            "ポイント不足です";
+            return;
+        }
+
+        point -= 2000;
+        coupons.push("🥕 岐阜の旬の野菜クーポン");
+    }
+
+    if(type === "gifu"){
+
+        if(point < 3000){
+            document.getElementById("shopMsg").textContent =
+            "ポイント不足です";
+            return;
+        }
+
+        point -= 3000;
+        coupons.push("🌿 岐阜野菜セットクーポン");
+    }
+
+    document.getElementById("shopMsg").textContent =
+    "クーポンを獲得しました！";
+
+    updateUI();
+}
+
+function updateUI(){
+
+    document.getElementById("point").textContent = point;
+
+    let avatar = "😞 疲れ気味";
+
+    if(point >= 3000){
+        avatar = "😄 とても元気";
+    }
+    else if(point >= 1000){
+        avatar = "🙂 元気";
+    }
+    else if(point >= 100){
+        avatar = "😐 普通";
+    }
+
+    document.getElementById("avatar").textContent = avatar;
+
+    if(coupons.length === 0){
+        document.getElementById("couponList").textContent = "なし";
+    }
+    else{
+        document.getElementById("couponList").innerHTML =
+        coupons.map(c => "・" + c).join("<br>");
+    }
+}
+
+updateUI();
+
+</script>
+
+</body>
+</html>

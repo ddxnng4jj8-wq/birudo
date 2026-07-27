@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ゲーム攻略情報共有アプリ</title>
+</head>
+<body>
+  <h1>ゲーム攻略情報共有アプリ</h1>
+
+  <h2>攻略情報追加</h2>
+
+  <input id="gameTitle" placeholder="ゲームタイトル">
+  <input id="title" placeholder="攻略タイトル">
+  <input id="content" placeholder="内容">
+
+  <button onclick="addGuide()">追加</button>
+
+  <h2>攻略情報一覧</h2>
+
+  <button onclick="loadGuides()">一覧取得</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function loadGuides() {
+      const res = await fetch("http://localhost:3000/api/guides");
+      const data = await res.json();
+
+      const games = {};
+
+      data.forEach(guide => {
+        if (!games[guide.gameTitle]) {
+          games[guide.gameTitle] = {};
+        }
+
+        if (!games[guide.gameTitle][guide.title]) {
+          games[guide.gameTitle][guide.title] = [];
+        }
+
+        games[guide.gameTitle][guide.title].push(guide);
+      });
+
+      let html = "";
+
+      for (const gameTitle in games) {
+        html += `
+          <div style="border:2px solid black; padding:10px; margin:10px 0;">
+            <h2>${gameTitle}</h2>
+        `;
+
+        for (const title in games[gameTitle]) {
+          html += `
+            <div style="border:1px solid gray; padding:10px; margin:10px;">
+              <h3>${title}</h3>
+          `;
+
+          games[gameTitle][title].forEach(guide => {
+            html += `
+              <p>${guide.content}</p>
+              <button onclick="deleteGuide(${guide.id})">削除</button>
+              <hr>
+            `;
+          });
+
+          html += `</div>`;
+        }
+
+        html += `</div>`;
+      }
+
+      document.getElementById("result").innerHTML = html;
+    }
+
+    async function addGuide() {
+      const gameTitle = document.getElementById("gameTitle").value;
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+
+      await fetch("http://localhost:3000/api/guides", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          gameTitle,
+          title,
+          content
+        })
+      });
+
+      document.getElementById("gameTitle").value = "";
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+
+      loadGuides();
+    }
+
+    async function deleteGuide(id) {
+      await fetch(`http://localhost:3000/api/guides/${id}`, {
+        method: "DELETE"
+      });
+
+      loadGuides();
+    }
+  </script>
+</body>
+</html>
