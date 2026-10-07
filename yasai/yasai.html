@@ -3,215 +3,286 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>野菜アプリ</title>
+<title>野菜アプリ - ホーム</title>
 
 <style>
-body{
-    font-family:sans-serif;
-    background:#f5fff5;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    margin:0;
-    min-height:100vh;
-    padding:20px;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
 }
 
-.card{
-    background:white;
-    width:350px;
-    margin:15px 0;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px #ccc;
-    text-align:center;
+body {
+    background-color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
-button{
-    margin:5px;
-    padding:10px;
-    border:none;
-    border-radius:5px;
-    cursor:pointer;
-    background:#4CAF50;
-    color:white;
+/* スマホ画面風のフレーム */
+.phone-frame {
+    width: 390px;
+    height: 800px;
+    background-color: #FFF3E0;
+    border-radius: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    border: 8px solid #333;
 }
 
-button:disabled{
-    background:gray;
+/* 1. キャラクター＆ステータスエリア */
+.character-section {
+    flex: 5.5;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 15px;
+    background: linear-gradient(to bottom, #dce8e8 0%, #FFF3E0 100%);
 }
 
-img{
-    width:100%;
-    margin-top:10px;
-    border-radius:8px;
+.character-area {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#avatar{
-    font-size:24px;
-    font-weight:bold;
+.character-avatar {
+    font-size: 50px;
+    background: #4a3b32;
+    color: #fff;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    text-align: center;
+    overflow: hidden;
 }
 
-#couponList{
-    text-align:left;
+/* プレビュー画像を表示する場合のスタイル */
+.character-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* おすすめ食材の吹き出し */
+.speech-bubble {
+    position: absolute;
+    right: -20px;
+    top: 30px;
+    background-color: #fff;
+    padding: 10px 14px;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.4;
+    text-align: left;
+    width: 130px;
+}
+
+.status-badge {
+    margin-top: 15px;
+    background-color: #fff;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.status-badge span {
+    color: #d32f2f;
+}
+
+/* 2. 栄養素メーターエリア */
+.meter-section {
+    flex: 3.5;
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.meter-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.meter-label {
+    width: 85px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #333;
+}
+
+.meter-bar-bg {
+    flex-grow: 1;
+    height: 12px;
+    background-color: #111;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.meter-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    width: 0%;
+    transition: width 0.4s ease;
+}
+
+#fill-carb { background-color: #00e5ff; }
+#fill-protein { background-color: #ff5252; }
+#fill-fat { background-color: #ffc107; }
+#fill-vitamin { background-color: #00e676; }
+#fill-mineral { background-color: #b388ff; }
+
+/* 3. ボトムナビゲーションエリア */
+.nav-section {
+    height: 85px;
+    background-color: #FFE0B2;
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.nav-item {
+    font-size: 12px;
+    font-weight: bold;
+    color: #555;
+    text-align: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.nav-item span {
+    display: block;
+    font-size: 20px;
+}
+
+.home-button-wrapper {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.home-button {
+    width: 68px;
+    height: 68px;
+    background-color: #fff;
+    border-radius: 50%;
+    border: 2px solid #D7CCC8;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.home-button svg {
+    width: 32px;
+    height: 32px;
+    fill: #000;
 }
 </style>
 </head>
 
 <body>
 
-<h1>🥦 野菜アプリ</h1>
+    <div class="phone-frame">
+        <!-- 1. キャラクター＆ステータスエリア -->
+        <div class="character-section">
+            <div class="character-area">
+                <div class="character-avatar" id="avatarBox">
+                    <span id="avatarEmoji">😞</span>
+                    <span style="font-size:10px;" id="pointText">0pt</span>
+                </div>
+                <div class="speech-bubble" id="recommendBox">
+                    おすすめの食材<br>
+                    <span style="color: #333; font-weight: normal;" id="recommendFood">牛肉・魚・大豆</span>
+                </div>
+            </div>
+            <div class="status-badge">
+                あすか ｜ <span id="statusText">たんぱく不足</span>
+            </div>
+        </div>
 
-<div class="card">
-    <h2>アバター</h2>
-    <div id="avatar">😞 疲れ気味</div>
-    <p>ポイント：<span id="point">0</span> pt</p>
-</div>
+        <!-- 2. 栄養素メーターエリア -->
+        <div class="meter-section">
+            <div class="meter-row">
+                <div class="meter-label">炭水化物</div>
+                <div class="meter-bar-bg"><div class="meter-bar-fill" id="fill-carb"></div></div>
+            </div>
+            <div class="meter-row">
+                <div class="meter-label">たんぱく質</div>
+                <div class="meter-bar-bg"><div class="meter-bar-fill" id="fill-protein"></div></div>
+            </div>
+            <div class="meter-row">
+                <div class="meter-label">脂質</div>
+                <div class="meter-bar-bg"><div class="meter-bar-fill" id="fill-fat"></div></div>
+            </div>
+            <div class="meter-row">
+                <div class="meter-label">ビタミン</div>
+                <div class="meter-bar-bg"><div class="meter-bar-fill" id="fill-vitamin"></div></div>
+            </div>
+            <div class="meter-row">
+                <div class="meter-label">ミネラル</div>
+                <div class="meter-bar-bg"><div class="meter-bar-fill" id="fill-mineral"></div></div>
+            </div>
+        </div>
 
-<div class="card">
-    <h2>📸 食事記録</h2>
+        <!-- 3. ボトムナビゲーション -->
+        <div class="nav-section">
+            <!-- 隠しファイル選択（カメラ・画像選択用） -->
+            <input type="file" id="photoInput" accept="image/*" style="display: none;">
+            
+            <button class="nav-item" onclick="document.getElementById('photoInput').click()">
+                <span>📷</span>記録
+            </button>
+            <button class="nav-item" style="color: #000;">
+                <span style="font-size: 16px; font-weight: bold; margin-bottom: 4px;">💬</span>sns
+            </button>
+            <div style="width: 60px;"></div>
+            <button class="nav-item" onclick="alert('一覧画面は今後作成します！')">
+                <span>🗂️</span>一覧
+            </button>
+            <button class="nav-item" onclick="alert('設定画面は今後作成します！')">
+                <span>⚙️</span>設定
+            </button>
 
-    <input type="file" id="photo" accept="image/*">
+            <!-- 中央の大きなホームボタン -->
+            <div class="home-button-wrapper">
+                <div class="home-button" onclick="location.reload()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <br><br>
-
-    <button id="saveBtn" onclick="saveFood()">
-        保存して記録する
-    </button>
-
-    <div id="preview"></div>
-</div>
-
-<div class="card">
-    <h2>🛒 クーポン交換</h2>
-
-    <button onclick="buyCoupon('season')">
-        🥕 岐阜の旬の野菜（2000pt）
-    </button>
-
-    <button onclick="buyCoupon('gifu')">
-        🌿 岐阜野菜セット（3000pt）
-    </button>
-
-    <p id="shopMsg"></p>
-</div>
-
-<div class="card">
-    <h2>🎫 所持クーポン</h2>
-    <div id="couponList">なし</div>
-</div>
-
-<script>
-
-let point = 0;
-let saved = false;
-let coupons = [];
-
-function saveFood() {
-
-    const photo = document.getElementById("photo");
-
-    if (photo.files.length === 0) {
-        alert("写真を選択してください");
-        return;
-    }
-
-    if (saved) {
-        alert("新しい写真を選択してください");
-        return;
-    }
-
-    const file = photo.files[0];
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-
-        document.getElementById("preview").innerHTML =
-        `<img src="${e.target.result}" alt="写真">`;
-
-    };
-
-    reader.readAsDataURL(file);
-
-    point += 10;
-
-    saved = true;
-
-    document.getElementById("saveBtn").disabled = true;
-
-    updateUI();
-}
-
-document.getElementById("photo").addEventListener("change", function() {
-
-    saved = false;
-    document.getElementById("saveBtn").disabled = false;
-
-});
-
-function buyCoupon(type) {
-
-    if(type === "season"){
-
-        if(point < 2000){
-            document.getElementById("shopMsg").textContent =
-            "ポイント不足です";
-            return;
-        }
-
-        point -= 2000;
-        coupons.push("🥕 岐阜の旬の野菜クーポン");
-    }
-
-    if(type === "gifu"){
-
-        if(point < 3000){
-            document.getElementById("shopMsg").textContent =
-            "ポイント不足です";
-            return;
-        }
-
-        point -= 3000;
-        coupons.push("🌿 岐阜野菜セットクーポン");
-    }
-
-    document.getElementById("shopMsg").textContent =
-    "クーポンを獲得しました！";
-
-    updateUI();
-}
-
-function updateUI(){
-
-    document.getElementById("point").textContent = point;
-
-    let avatar = "😞 疲れ気味";
-
-    if(point >= 3000){
-        avatar = "😄 とても元気";
-    }
-    else if(point >= 1000){
-        avatar = "🙂 元気";
-    }
-    else if(point >= 100){
-        avatar = "😐 普通";
-    }
-
-    document.getElementById("avatar").textContent = avatar;
-
-    if(coupons.length === 0){
-        document.getElementById("couponList").textContent = "なし";
-    }
-    else{
-        document.getElementById("couponList").innerHTML =
-        coupons.map(c => "・" + c).join("<br>");
-    }
-}
-
-updateUI();
-
-</script>
-
+    <script src="yasai.js"></script>
 </body>
 </html>

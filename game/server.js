@@ -19,40 +19,25 @@ app.get("/api/guides", (req, res) => {
   res.json(guides);
 });
 
-app.get("/api/guides/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const guide = guides.find(g => g.id === id);
-
-  if (!guide) {
-    return res.status(404).json({ message: "Not Found" });
-  }
-
-  res.json(guide);
-});
-
 app.post("/api/guides", (req, res) => {
   const { gameTitle, title, content } = req.body;
-
   const guide = {
     id: guides.length + 1,
     gameTitle,
     title,
     content
   };
-
   guides.push(guide);
-
   res.status(201).json(guide);
 });
 
 app.delete("/api/guides/:id", (req, res) => {
   const id = Number(req.params.id);
-
   guides = guides.filter(g => g.id !== id);
-
   res.json({ message: "削除しました" });
 });
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
